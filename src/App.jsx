@@ -1,16 +1,22 @@
 import './App.css'
 import Favorites from './pages/Favorites';
 import Home from "./pages/Home"
-import {Routes, Route} from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
+// we want navbar on all pages so we put it here and not just Home
+import NavBar from './components/NavBar';
 
 function App() {
   return (
-    <main className="main-content">
-      <Routes>
-        <Route path = "/" element={<Home />}/>
-        <Route path = "/favorites" element={<Favorites />}/>
-      </Routes>
-    </main>
+    <div>
+      <NavBar></NavBar>
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/favorites" element={<Favorites />} />
+        </Routes>
+      </main>
+    </div>
+
   );
 }
 
