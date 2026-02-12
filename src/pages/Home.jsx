@@ -2,6 +2,7 @@
 
 import MovieCard from "../components/MovieCard";
 import { useState } from "react";
+import "../css/Home.css"
 // .map to dynamically render an array of values. It iterates over all the values 
 
 function Home() {

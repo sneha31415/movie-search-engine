@@ -1,4 +1,5 @@
 // components are things that will be displayed on our page 
+import "../css/MovieCard.css"
 
 function MovieCard({ movie }) {
     return <div className="movie-card">
