@@ -16,25 +16,29 @@ function Home() {
     ]
 
     const handleSearch = (e) => {
+        // by default page is reloaded 
         e.preventDefault()
         alert(searchQuery)
-        setSearchQuery("----")
     }
 
     return <div className="home">
         <form onSubmit={handleSearch} className="search-form">
-            <input type="text" 
-            placeholder="Search for movies..." 
-            className="search-input"
-            value = {searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            <input type="text"
+                placeholder="Search for movies..."
+                className="search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type = "submit" className="search-button">Search</button>
+            <button type="submit" className="search-button">Search</button>
         </form>
         <div className="movies-grid">
             {/* what comes after the arrow is the component we want to return for every instance of a movie
             Whenever you dynamically render we need key */}
-            {movies.map(movie => <MovieCard movie={movie} key={movie.id} />)}
+            {movies.map(
+                movie =>
+                    movie.title.toLowerCase().startsWith(searchQuery) && 
+                (<MovieCard movie={movie} key={movie.id} />)
+            )}
         </div>
     </div>
 }
