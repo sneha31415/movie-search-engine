@@ -1,3 +1,5 @@
+// components are things that will be displayed on our page 
+
 function MovieCard({ movie }) {
     return <div className="movie-card">
         <div className="movie-poster">
