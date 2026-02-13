@@ -1,26 +1,64 @@
 // list of all movies
 
 import MovieCard from "../components/MovieCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { searchMovies, getPopularMovies } from "../services/api";
 import "../css/Home.css"
-// .map to dynamically render an array of values. It iterates over all the values 
 
 function Home() {
     // [state VAriable, function used to change the state]
     // we need to connect the componenets with the state 
     const [searchQuery, setSearchQuery] = useState("");
+    const [movies, setMovies] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const movies = [
-        { id: 1, title: "3 idiots", release_date: "2009" },
-        { id: 2, title: "I", release_date: "2019" },
-        { id: 3, title: "badshaah", release_date: "1999" }
-    ]
+    /* on refreshing wkt all the components rerun so doing
+    ***const movies = getPopularMovies()*** will make the API call again and again 
+    even tho the answer of getPopularMovies is same for each day/week
+    */
+   /* The "useEffect" allows you to add sideeffects to your functions or 
+   tour components and define when they should run */
+    
+//    if anything inside the dependency array [] changes, useEffect is run
+    useEffect(() => {
+        const loadPopularMovies = async () => {
+            try {
+                const popularMovies = await getPopularMovies()
+                setMovies(popularMovies)
+            } catch (err) {
+                console.log(err)
+                setError("failed to load movies...")
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+        loadPopularMovies()
+    }, [])
 
-    const handleSearch = (e) => {
+   const handleSearch = async  (e) => {
         // by default page is reloaded 
         e.preventDefault()
-        alert(searchQuery)
-    }
+        // search movie must not be am empty string 
+        if (!searchQuery.trim()) return 
+        //dont search if we are already searching 
+        if (loading) return
+
+        // set "true" because we have started to search for movie
+        setLoading(true)
+        try {
+            const searchResults = await searchMovies(searchQuery)
+            setMovies(searchResults)
+            setError(null)
+        } catch (err) {
+            console.log(err)
+            setError("failed to search movies...")
+        } finally {
+            setLoading(false)
+        }
+
+    };
 
     return <div className="home">
         <form onSubmit={handleSearch} className="search-form">
@@ -32,15 +70,22 @@ function Home() {
             />
             <button type="submit" className="search-button">Search</button>
         </form>
-        <div className="movies-grid">
+
+        {error && <div className="error-message">{error} </div>}
+
+        {loading ? (
+            <div className="loading">Loading...</div>
+        ) : (
+            <div className="movies-grid">
             {/* what comes after the arrow is the component we want to return for every instance of a movie
             Whenever you dynamically render we need key */}
             {movies.map(
                 movie =>
-                    movie.title.toLowerCase().startsWith(searchQuery) && 
                 (<MovieCard movie={movie} key={movie.id} />)
             )}
         </div>
+        )}
+    
     </div>
 }
 
