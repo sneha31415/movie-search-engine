@@ -10,13 +10,11 @@ export const useMovieContext = () => useContext(MovieContext)
 // this will provide state to any of the components that are wrapped around it
 export const MovieProvider = ({children}) => {
     // children is anything thats inside of the component that we rendered
-    const [favorites, setFavorites] = useState([])
-
-    useEffect(() => {
+    // Initialize state from localStorage directly
+    const [favorites, setFavorites] = useState(() => {
         const storedFavs = localStorage.getItem("favorites")
-
-        if (storedFavs) setFavorites(JSON.parse(storedFavs))
-    }, [])
+        return storedFavs ? JSON.parse(storedFavs) : []
+    })
 
     // if we change favorites, we have to update local storage
     useEffect(() => {
